@@ -9,6 +9,7 @@ langchain-ollama = "*"
 ipykernel = "*"
 langchain ="*"
 langchain-core = "*"
+streamlit = "*"
 [dev-packages]
 
 [requires]
