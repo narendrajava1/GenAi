@@ -278,4 +278,4 @@ print(llm_creative.invoke(question).content)
 
 ---
 
-Which module do you want to **deep dive** into first? 🚀
+# 🎉 Congratulations on completing Week 1!
