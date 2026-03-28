@@ -4,14 +4,44 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-langchain-community = "*"
-langchain-ollama = "*"
-ipykernel = "*"
-langchain ="*"
+
+# Core GenAI
+langchain = "*"
 langchain-core = "*"
+langchain-community = "*"
+
+# LLM Integration
+langchain-ollama = "*"
+
+# UI
 streamlit = "*"
+
+# RAG Stack
+langchain-text-splitters = "*"
+langchain-huggingface = "*"
+#ChromaDB for vector storage
+#langchain-chroma = "*"
+#chromadb = "*"
+
+#Facebook AI Similarity Search
+faiss-cpu = "*"
+
+# Embeddings
+sentence-transformers = "*"
+
+# Document Processing
+unstructured = "*"
+"unstructured[pdf]" = "*"
+
+# NLP Utilities
+nltk = "*"
+
+# Dev / Notebook
+ipykernel = "*"
+#Text to PDF generation
+pypdf = "*"
+fpdf = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.14"
-python_full_version = "3.14.3"
+python_version = "3.12"
