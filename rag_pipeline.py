@@ -1,6 +1,7 @@
 from langchain_chroma import Chroma
 from langchain_classic.chains.retrieval_qa.base import RetrievalQA
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader, UnstructuredPDFLoader, \
+    UnstructuredFileLoader
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -30,7 +31,11 @@ RAG_PROMPT = PromptTemplate(
 #Step:1
 # LoadPDF
 def load_docs(path:str):
-    loader=PyPDFLoader(path)
+    loader=DirectoryLoader(
+        path=path,
+        glob="./*.pdf",
+        loader_cls=UnstructuredFileLoader
+    )
     return loader.load()
 
 #Step:2 Split

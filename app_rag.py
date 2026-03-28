@@ -1,7 +1,7 @@
 from langchain_community.document_loaders import PyPDFLoader
 import streamlit as st
 
-from rag_pipeline import split_docs, create_vectorstore, ask_question
+from rag_pipeline import split_docs, create_vectorstore, ask_question, load_docs
 
 # ── Page Config ───────────────────────────────
 st.set_page_config(
@@ -15,8 +15,7 @@ st.set_page_config(
 def setup():
     try:
         with st.spinner("📄 Loading PDF..."):
-            loader = PyPDFLoader("./sample.pdf")
-            documents = loader.load()
+            documents = load_docs("./pdfs")
 
         with st.spinner(f"✂️ Splitting {len(documents)} page(s) into chunks..."):
             chunks = split_docs(documents)
@@ -26,9 +25,6 @@ def setup():
 
         return vectorstore, len(documents), len(chunks)
 
-    except FileNotFoundError:
-        st.error("❌ PDF not found! Make sure 'sample.pdf' exists.")
-        st.stop()
     except Exception as e:
         st.error(f"❌ Error loading PDF: {e}")
         st.stop()
@@ -69,11 +65,16 @@ if user_input:
             if docs:
                 with st.expander("📚 Source Documents"):
                     for doc in docs:
-                        st.markdown(f"**Page {doc.metadata['page']}**: {doc.page_content[:200]}...")
+                        page = doc_count
+                        source = doc.metadata.get("source", "Unknown")
+                        st.markdown(
+                            f"**Source:** {source} | **Page:** {page}  \n"
+                            f"{doc.page_content[:200]}..."
+                        )
             #save assistant response
             st.session_state.messages.append({
                 "role": "assistant",
                 "content": response,
                 "sources": docs
             })
-            st.success(f"Loaded {doc_count} {'pages' if doc_count > 1 else 'page'}, {chunk_count} chunks")
+            # st.success(f"Loaded {doc_count} {'pages' if doc_count > 1 else 'page'}, {chunk_count} chunks")

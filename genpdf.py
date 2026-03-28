@@ -34,8 +34,8 @@ He partnered with IBM to skill 1 lakh youngsters in AI and cybersecurity.
 for line in content.split("\n"):
     pdf.cell(200, 10, txt=line, ln=True)
 
-pdf.output("sample.pdf")
-print("✅ sample.pdf created!")
+pdf.output("cbn.pdf")
+print("✅ cbn.pdf created!")
 # ```
 #
 # Add `fpdf` to Pipfile and run this once to generate your test PDF.
