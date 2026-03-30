@@ -5,6 +5,18 @@ name = "pypi"
 
 [packages]
 
+# 🚀 FastAPI - Web framework for building APIs
+fastapi = "*"
+
+# ⚡ Uvicorn - ASGI server to run FastAPI apps
+uvicorn = "*"
+
+# 🧾 Pydantic - Data validation and request/response models
+pydantic = "*"
+
+# 🔐 python-dotenv - Load environment variables from .env file
+python-dotenv = "*"
+
 # Core GenAI
 langchain = "*"
 langchain-core = "*"
@@ -12,7 +24,8 @@ langchain-community = "*"
 
 # LLM Integration
 langchain-ollama = "*"
-
+# 🤖 langchain-openai - Integration package to connect LangChain with OpenAI models (GPT-4, GPT-3.5, etc.)
+langchain-openai = "*"
 # UI
 streamlit = "*"
 
