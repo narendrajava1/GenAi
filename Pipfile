@@ -54,6 +54,12 @@ ipykernel = "*"
 #Text to PDF generation
 pypdf = "*"
 fpdf = "*"
+
+# Microsoft AutoGen AgentChat framework for building multi-agent conversational AI systems
+autogen-agentchat = "*"
+
+# AutoGen extensions with Ollama support for running local LLMs and integrating open-source models
+"autogen-ext[ollama]" = "*"
 [dev-packages]
 
 [requires]

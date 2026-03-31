@@ -30,15 +30,12 @@ class Trade:
 
         self.lots = lots
         self.qty = lots * self.lot_size
-
         self.buy_price = buy_price
         self.sell_price = sell_price
         self.stop_loss = stop_loss
-
         self.orders = self.split_orders()
 
     def split_orders(self):
-        """Split total qty into exchange-compliant order chunks."""
         orders = []
         remaining = self.qty
         while remaining > 0:
@@ -49,25 +46,19 @@ class Trade:
 
     def calculate(self):
         profit = sum((self.sell_price - self.buy_price) * o for o in self.orders)
-
         charges = sum(
             40 + ((self.buy_price + self.sell_price) * o * 0.0008)
             for o in self.orders
         )
-
         net_profit = profit - charges
         investment = self.buy_price * self.qty
-
-        # Break-even: for CE add premium to strike, for PE subtract
         be = (
             self.strike + self.buy_price
             if self.option_type == "CE"
             else self.strike - self.buy_price
         )
-
         risk = (self.buy_price - self.stop_loss) * self.qty
         reward = (self.sell_price - self.buy_price) * self.qty
-
         loss_per_unit = self.buy_price - self.stop_loss
         total_loss = loss_per_unit * self.qty
         loss_with_charges = total_loss + charges
