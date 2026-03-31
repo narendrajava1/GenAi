@@ -1,73 +1,72 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+# main.py
+"""
+Trading Agent — CLI entry point.
 
-from ai.agent.agent_builder import build_agent
-from ai.extractors.trade_extractor import extract_trade_data
-from models.trade import Trade
+Run:
+    python main.py
 
-app = FastAPI()
-agent=build_agent()
+Or test a single query:
+    python main.py "NIFTY 18000 CE, 2 lots, buy 200, sell 280, SL 160"
+"""
+
+import sys
+from agent.trading_agent import ask_agent
+
+BANNER = """
+╔══════════════════════════════════════════════════════╗
+║         📈  Options Trading AI Agent  📈             ║
+║   Powered by Ollama (llama3.1) + LangChain           ║
+║   Type 'exit' or 'quit' to stop                      ║
+╚══════════════════════════════════════════════════════╝
+"""
+
+EXAMPLE_QUERIES = [
+    "NIFTY 18000 CE, 2 lots, buy at 200, sell at 280, stop loss 160",
+    "Calculate BANKNIFTY 44000 PE trade: 1 lot, entry 350, target 500, SL 280",
+    "What is the break-even for NIFTY 19500 CE if I buy at 120?",
+]
 
 
-class QueryRequest(BaseModel):
-    query: str
+def run_cli():
+    print(BANNER)
+    print("💡 Example queries:")
+    for i, q in enumerate(EXAMPLE_QUERIES, 1):
+        print(f"   {i}. {q}")
+    print()
 
-# Request body
-class TradeRequest(BaseModel):
-    symbol: str
-    lots: int
-    buy_price: float
-    sell_price: float
-    stop_loss: float
-@app.get("/")
-def home():
-    return {"message": "Trading API is running 🚀"}
+    session_id = "cli_session"
 
-@app.post("/calculate")
-def calculate_trade(data: TradeRequest):
-    trade = Trade(
-        data.symbol,
-        data.lots,
-        data.buy_price,
-        data.sell_price,
-        data.stop_loss
-    )
+    while True:
+        try:
+            user_input = input("You: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\n👋 Goodbye!")
+            break
 
-    return trade.calculate()
+        if not user_input:
+            continue
 
-@app.get("/ai")
-def home():
-    return {"message": "AI Trading Agent 🚀"}
+        if user_input.lower() in ("exit", "quit", "bye"):
+            print("👋 Goodbye!")
+            break
 
-@app.post("/ai/calculate")
-def ai_trade(data: QueryRequest):
-    try:
-        extracted = extract_trade_data(data.query)
+        print("\nAgent: ", end="", flush=True)
+        response = ask_agent(user_input, session_id=session_id)
+        print(response)
+        print()
 
-        required = ["symbol", "lots", "buy_price", "sell_price", "stop_loss"]
 
-        for field in required:
-            if field not in extracted:
-                return {
-                    "error": f"Missing field: {field}",
-                    "extracted": extracted
-                }
+def run_single(query: str):
+    """Run a single query and print result (useful for testing)."""
+    print(f"\n🔍 Query: {query}\n")
+    response = ask_agent(query, session_id="test")
+    print(f"✅ Response:\n{response}\n")
 
-        # ✅ FIX HERE
-        trade = Trade(
-            extracted["symbol"],
-            extracted["lots"],
-            extracted["buy_price"],
-            extracted["sell_price"],
-            extracted["stop_loss"]
-        )
 
-        result = trade.calculate()
-
-        return {
-            "input": extracted,
-            "result": result
-        }
-
-    except Exception as e:
-        return {"error": str(e)}
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        # Single query mode: python main.py "your query here"
+        run_single(" ".join(sys.argv[1:]))
+    else:
+        # Interactive CLI mode
+        run_cli()
